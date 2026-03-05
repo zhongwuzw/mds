@@ -1,12 +1,12 @@
-● with-zephyr does not support metro's codemod, but the tutorial shows it as supported:
+* with-zephyr does not support metro's codemod, but the tutorial shows it as supported:
 ![alt text](image.png)
 ![alt text](image-1.png)
-● https://docs.zephyr-cloud.io/tutorials/metro, react-native cli moved to react-native-community/cli, like npx @react-native-community/cli@latest init MiniApp
+* https://docs.zephyr-cloud.io/tutorials/metro, react-native cli moved to react-native-community/cli, like npx @react-native-community/cli@latest init MiniApp
 ![alt text](image-2.png)
 ![alt text](image-3.png)
-● Error when bundle mini application: 
+* Error when bundle mini application: 
   ○ I don't see zephyrCommandWrapperexported: https://github.com/ZephyrCloudIO/zephyr-packages/blob/main/libs/zephyr-metro-plugin/src/index.ts
-npx react-native bundle-mf-remote --platform ios --dev false
+`npx react-native bundle-mf-remote --platform ios --dev false`
 error Failed to load configuration of your project.
 
 ```
