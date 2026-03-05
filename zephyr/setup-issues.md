@@ -5,7 +5,7 @@
 ![alt text](image-2.png)
 ![alt text](image-3.png)
 * Error when bundle mini application: 
-  ○ I don't see zephyrCommandWrapperexported: https://github.com/ZephyrCloudIO/zephyr-packages/blob/main/libs/zephyr-metro-plugin/src/index.ts
+  ○ I don't see zephyrCommandWrapper exported: https://github.com/ZephyrCloudIO/zephyr-packages/blob/main/libs/zephyr-metro-plugin/src/index.ts
 `npx react-native bundle-mf-remote --platform ios --dev false`
 error Failed to load configuration of your project.
 
