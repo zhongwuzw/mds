@@ -19,4 +19,9 @@ path.resolve(__dirname, '../../packages/core')
 ```
 This configuration is not generic and may cause errors for users with different project structures. The documentation should clarify that these paths need to be adjusted based on the actual project structure, or provide a more universal configuration example.
 
-* 
+* Configuration Issue: Unable to configure versions/tags/envs
+
+Unable to configure versions/tags/envs, results in errors.
+
+![alt text](image.png)
+![alt text](image-1.png)
