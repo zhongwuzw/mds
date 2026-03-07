@@ -52,5 +52,5 @@ This configuration is not generic and may cause errors for users with different 
 **Status:** ❌ Error
 
 **Screenshots:**
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
