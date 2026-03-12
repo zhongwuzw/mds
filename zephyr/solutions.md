@@ -1,8 +1,39 @@
-### Package Structure Division
+## Core Architecture Decisions
+
+Our solution is based on the following key design decisions:
+
+### 1. Cache Bundles Only, Not Manifests
+
+- **Manifest is a runtime contract** (shared negotiation, expose mapping). Zephyr tag URLs are dynamic pointers - caching would lead to stale metadata
+- **Bundle URLs are immutable** (each version has a unique URL containing username, buildId, content hash), naturally suitable as cache keys
+- **Manifest always fetched from network**, handled by existing `SnapshotHandler`, flow remains unchanged
+
+### 2. Native Layer Closed Loop
+
+- In production mode, `@expo/metro-runtime`'s `buildUrlForBundle` only accepts `http://`/`https://` protocols - `file://` throws exceptions
+- Download, storage, verification, and execution all sink to RN native module (`NativeMFECache`)
+- `downloadFile(url, destPath)` → native layer uses `NSURLSession`/`OkHttp` to download while streaming SHA-256 calculation
+- `evaluateJavaScript(filePath)` → native layer reads disk file and executes directly via JSI `runtime.evaluateJavaScript()`
+
+### 3. Cache Layer Insertion Point: `asyncRequire.ts`'s `buildLoadBundleAsyncWrapper`
+
+- Remote build artifacts include container bundle + exposed module bundle, both need caching
+- Both go through `asyncRequire.ts`'s `buildLoadBundleAsyncWrapper` → inner `loadBundleAsync`
+- `loadEntry` hook only intercepts container bundle, cannot cover exposed module bundles
+- Cache layer placed inside wrapper, uses `isUrl(bundlePath)` to distinguish remote bundles (full URL) from host split bundles (relative path)
+
+
+### 4.Package Structure Division
 
 - **`metro-core`**: Pure JS/TS, MF Runtime integration layer, zero native dependencies
 - **`metro-cache`**: RN native module package, contains native code (iOS Objective-C++ + Android Kotlin) + JS business logic (CacheManager, VersionPoller, EjectionManager)
 - `metro-core` dynamically loads `metro-cache` via peer dependency (optional)
+
+### 5. JS Layer Business Logic in `metro-cache` Package
+
+- CacheManager, VersionPoller, FallbackChain, EjectionManager and other business logic all in JS layer (`metro-cache` package)
+- Reasons: Need to access MF Runtime state, integrate with React lifecycle, business logic flexibility
+- Native layer only provides low-level capabilities: file system, HTTP download, SHA-256, JS execution
 
 ## Complete Flow
 
@@ -45,5 +76,5 @@ evaluateJavaScript(destPath) execute from disk
 ### Auxiliary Capabilities
 
 - **VersionPoller**: Background polling manifest → detect bundleUrl changes → silent download marked as pendingUpdate → activate on cold start
-- **FallbackChain**: I recommend not do any fallback for error module loading, just throw error
+- **FallbackChain**: I recommend not do any fallback for error module loading, just throw error, but rely on user to update the module
 - **EjectionManager**: Cleanup expired versions on startup + retry broken versions
