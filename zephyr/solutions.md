@@ -76,5 +76,5 @@ evaluateJavaScript(destPath) execute from disk
 ### Auxiliary Capabilities
 
 - **VersionPoller**: Background polling manifest → detect bundleUrl changes → silent download marked as pendingUpdate → activate on cold start
-- **FallbackChain**: I recommend not do any fallback for error module loading, just throw error, but rely on user to update the module
+- **FallbackChain**: No fallback for error module loading - just throw error and let business logic perceive it. Reason: we cannot guarantee that fallback versions won't cause business issues. The recommended flow: 1) throw error to surface the problem, 2) business team fixes the issue, 3) rely on background polling to download new bundle, 4) next load will succeed with the fixed version
 - **EjectionManager**: Cleanup expired versions on startup + retry broken versions
